@@ -136,7 +136,7 @@ fun AddContactForm(onAddContact: (String) -> Unit) {
         TextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Nombre del Contacto") },
+            label = { Text("Contact Name") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -144,12 +144,12 @@ fun AddContactForm(onAddContact: (String) -> Unit) {
             onClick = {
                 if (name.isNotEmpty()) {
                     onAddContact(name)
-                    name = "" // Limpiar el campo de texto después de agregar
+                    name = ""
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Agregar Contacto")
+            Text("Add Contact")
         }
     }
 }
