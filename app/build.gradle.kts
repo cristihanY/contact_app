@@ -61,10 +61,31 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
+    //Navigation
+
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
+
+
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2")
+
+
+    //Scanner
+    implementation("com.google.mlkit:barcode-scanning:17.0.3")
+
     //Lombok
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
+    //camerax
+    implementation("androidx.camera:camera-core:1.1.0")
+    implementation("androidx.camera:camera-camera2:1.1.0")
+    implementation("androidx.camera:camera-lifecycle:1.1.0")
+    implementation("androidx.camera:camera-view:1.1.0")
+    implementation("androidx.camera:camera-extensions:1.1.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.24.13-rc")
+
 
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

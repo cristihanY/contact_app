@@ -4,28 +4,33 @@ import java.util.Date;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "contacts")
-public class Contact {
+@Entity(tableName = "customers")
+public class Customer {
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     private String name;
+    private String lastName;
+    private String email;
     private String phone;
     private Date date;
 
-    public Contact() {}
+    public Customer() {
+    }
 
-    public Contact(String name, String phone, Date date) {
+    public Customer(String name, String lastName, String email, String phone, Date date) {
         this.name = name;
+        this.lastName = lastName;
+        this.email = email;
         this.phone = phone;
         this.date = date;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -35,6 +40,22 @@ public class Contact {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhone() {
@@ -52,5 +73,4 @@ public class Contact {
     public void setDate(Date date) {
         this.date = date;
     }
-
 }

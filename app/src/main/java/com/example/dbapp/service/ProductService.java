@@ -3,35 +3,35 @@ package com.example.dbapp.service;
 import java.util.List;
 import com.example.dbapp.core.AppDatabase;
 import com.example.dbapp.model.entity.Product;
-import com.example.dbapp.repository.ProductRepository;
+import com.example.dbapp.repository.dao.ProductDao;
 
 public class ProductService {
 
-    private final ProductRepository productRepository;
+    private final ProductDao productDao;
 
     public ProductService(AppDatabase database) {
-        this.productRepository = new ProductRepository(database);
+        this.productDao = database.productDao();
     }
 
-    public void addProduct(Product product) {
-        Product p = productRepository.insert(product);
-        System.out.println("CREATE " + p.getName());
+    public Product insert(Product product) {
+        long productId = productDao.insert(product);
+        return productDao.getById((int) productId);
     }
 
-    public void updateProduct(Product product) {
-        productRepository.update(product);
+    public void update(Product product) {
+        productDao.update(product);
     }
 
-    public void removeProduct(Product product) {
-        productRepository.delete(product);
+    public void delete(Product product) {
+        productDao.delete(product);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.getAll();
+    public List<Product> getAll() {
+        return productDao.getAll();
     }
 
-    public Product getProductById(int id) {
-        return productRepository.getById(id);
+    public Product getById(int id) {
+        return productDao.getById(id);
     }
 
 }
