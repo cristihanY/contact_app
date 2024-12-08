@@ -2,16 +2,13 @@ package com.example.dbapp.ui.client
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,22 +17,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.util.Date
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.dbapp.model.entity.Customer
-import com.example.dbapp.viewmodel.ContactViewModel
-import java.util.Date
+import com.example.dbapp.ui.client.component.ContactForm
+import com.example.dbapp.ui.client.component.TopBarClientComponent
+import com.example.dbapp.ui.uiutil.DeleteConfirmationDialog
+import com.example.dbapp.viewmodel.MessageServiceViewModel
 
 @Composable
 fun EditContactFormScreen(
@@ -44,43 +39,33 @@ fun EditContactFormScreen(
     customerId: Long,
     viewModel: ContactViewModel
 ) {
-
-    // Ejecutamos la carga de datos cuando cambia el customerId
     LaunchedEffect(customerId) {
-        viewModel.getCustomerById(customerId)  // Llamar para cargar el cliente cuando cambia el ID
+        viewModel.getCustomerById(customerId)
     }
-    // Recoger el estado del customer del ViewModel
+
     val customer by viewModel.customer.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // Verificamos si estamos cargando. Si es así, mostramos un indicador de carga.
     if (isLoading) {
-        // Indicador de carga mientras se recupera la data
         CircularProgressIndicator(Modifier.fillMaxSize())
     } else {
-        // Estado para los campos del formulario
         var name by remember { mutableStateOf(customer.name ?: "") }
         var lastName by remember { mutableStateOf(customer.lastName ?: "") }
         var email by remember { mutableStateOf(customer.email ?: "") }
         var phone by remember { mutableStateOf(customer.phone ?: "") }
         var showError by remember { mutableStateOf(false) }
 
-
-
-        // Una vez los datos estén cargados, evitamos redibujos innecesarios
-        if (customer.id != 0L) {  // Asegurarnos de que el cliente existe antes de rellenar el formulario
-            // Contenedor principal
+        if (customer.id != 0L) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                // Barra superior con botón de guardar
-                TopBarComponent(
+                TopBarClientComponent(
                     navController = navController,
                     onSave = {
                         if (name.isNotEmpty()) {
-                            // Crear un nuevo objeto Customer
                             val updatedCustomer = Customer(
                                 name,
                                 lastName,
@@ -88,25 +73,15 @@ fun EditContactFormScreen(
                                 phone,
                                 Date()
                             )
-                            viewModel.updateCustomer(customerId, updatedCustomer) // Llamar a la función de actualización
-
-                            // Limpiar los campos después de guardar
-                            name = ""
-                            lastName = ""
-                            email = ""
-                            phone = ""
-                            showError = false
-
-                            // Navegar hacia atrás
+                            viewModel.updateCustomer(customerId, updatedCustomer)
                             navController.navigateUp()
                         } else {
-                            showError = true // Mostrar error si el nombre está vacío
+                            showError = true
                         }
                     },
                     modifier = Modifier.weight(0.1f)
                 )
 
-                // Títulos
                 Text(
                     text = "Editar cliente",
                     style = MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp),
@@ -118,7 +93,6 @@ fun EditContactFormScreen(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
-                // Componente del formulario de contacto
                 ContactForm(
                     name = name,
                     onNameChange = { name = it },
@@ -129,30 +103,44 @@ fun EditContactFormScreen(
                     phone = phone,
                     onPhoneChange = { phone = it },
                     showError = showError,
+                    isCreateForm = false,
                     modifier = Modifier.weight(0.9f)
                 )
+
+                Button(
+                    onClick = { showDeleteDialog = true },
+                    colors = ButtonDefaults.buttonColors(Color.Red),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .padding(16.dp)
+                ) {
+                    Text("Eliminar cliente", color = Color.White)
+                }
+
+                if (showDeleteDialog) {
+                    DeleteConfirmationDialog(
+                        onConfirm = {
+                            viewModel.deleteCustomer(customerId)
+                            showDeleteDialog = false
+                            navController.navigateUp()
+                        },
+                        onDismiss = { showDeleteDialog = false }
+                    )
+                }
             }
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun EditContactFormScreenE() {
     val navController = rememberNavController()
-    val innerPadding = PaddingValues(16.dp) // o el valor que necesites
-    val viewModel = ContactViewModel()
-    // Crear un cliente falso para la vista previa
-    val fakeCustomer = Customer(
-        "Juan",
-        "Pérez",
-        "juan.perez@example.com",
-        "123456789",
-        Date()
-    )
+    val innerPadding = PaddingValues(16.dp)
+    val messageViewModel = MessageServiceViewModel()
+    val viewModel = ContactViewModel(messageViewModel)
 
-    // Llamar a la función con el cliente falso
     EditContactFormScreen(navController = navController, innerPadding = innerPadding, customerId = 1, viewModel = viewModel)
 }
 

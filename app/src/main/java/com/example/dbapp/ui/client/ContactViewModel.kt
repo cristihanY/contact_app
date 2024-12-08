@@ -1,17 +1,21 @@
-package com.example.dbapp.viewmodel
+package com.example.dbapp.ui.client
 
+import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.viewModelScope
 import com.example.dbapp.core.init.MyApp
-import com.example.dbapp.model.entity.Customer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.dbapp.model.entity.Customer
+import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.dbapp.model.enums.MessageType
+import com.example.dbapp.viewmodel.MessageServiceViewModel
 
 
-class ContactViewModel : ViewModel() {
+class ContactViewModel(
+    private val messageService: MessageServiceViewModel
+) : ViewModel() {
 
     private val contactService = MyApp.getInstance().customerService
 
@@ -55,6 +59,7 @@ class ContactViewModel : ViewModel() {
             }
             loadCustomers()
         }
+        messageService.showMessage("El cliente ha sido creado correctamente", MessageType.SUCCESS)
     }
 
     fun updateCustomer(id: Long, customer: Customer) {
@@ -64,6 +69,7 @@ class ContactViewModel : ViewModel() {
             }
             loadCustomers()
         }
+        messageService.showMessage("El cliente ha sido actualizado correctamente", MessageType.SUCCESS)
     }
 
     fun deleteCustomer(id: Long) {
@@ -72,6 +78,7 @@ class ContactViewModel : ViewModel() {
                 contactService.removeCustomer(id)
             }
             loadCustomers()
+            messageService.showMessage("El cliente ha sido eliminado correctamente")
         }
     }
 

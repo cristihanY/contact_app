@@ -2,19 +2,20 @@ package com.example.dbapp.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.dbapp.viewmodel.ContactViewModel
+import com.example.dbapp.ui.client.ContactViewModel
 import com.example.dbapp.ui.client.ClientView
-import com.example.dbapp.ui.client.ContactFormScreen
+import com.example.dbapp.ui.client.CreateContactFormScreen
 import com.example.dbapp.ui.client.EditContactFormScreen
 import com.example.dbapp.ui.home.HomeView
 import com.example.dbapp.ui.main.MainScreen
 import com.example.dbapp.ui.menu.MenuView
 import com.example.dbapp.ui.orders.OrderView
+import com.example.dbapp.ui.product.CreateProductFormScreen
 import com.example.dbapp.ui.product.ProductView
+import com.example.dbapp.ui.product.ProductViewModel
 import com.example.dbapp.ui.scanner.ScannerView
 
 
@@ -22,7 +23,8 @@ import com.example.dbapp.ui.scanner.ScannerView
 fun AppNavGraph(
     navController: NavHostController,
     innerPadding: PaddingValues,
-    contactViewModel: ContactViewModel
+    contactViewModel: ContactViewModel,
+    productViewModel: ProductViewModel
 ) {
     NavHost(navController = navController, startDestination = "main") {
         composable("main") {
@@ -48,8 +50,19 @@ fun AppNavGraph(
         ) }
         composable("product") { ProductView(
             navController =navController,
+            productViewModel = productViewModel,
             innerPadding = innerPadding
         ) }
+
+        composable("createProduct") {
+
+            CreateProductFormScreen(
+                navController = navController,
+                innerPadding = innerPadding,
+                onSave = { product -> productViewModel.addProduct(product) }
+            )
+        }
+
         composable("client") { ClientView(
             navController =navController,
             contactViewModel = contactViewModel,
@@ -59,7 +72,7 @@ fun AppNavGraph(
 
         composable("createContact") {
 
-            ContactFormScreen(
+            CreateContactFormScreen(
                 navController = navController,
                 innerPadding = innerPadding,
                 onSave = { customer -> contactViewModel.addCustomer(customer) }
@@ -69,16 +82,13 @@ fun AppNavGraph(
         composable("editCustomer/{customerId}") { backStackEntry ->
             val customerId = backStackEntry.arguments?.getString("customerId")?.toLongOrNull() ?: 0L
 
-            println("Received customer ID: $customerId")
-
             EditContactFormScreen(
                 navController = navController,
-                innerPadding = PaddingValues(16.dp),
+                innerPadding = innerPadding,
                 customerId = customerId,
                 viewModel = contactViewModel
             )
         }
-
 
     }
 }

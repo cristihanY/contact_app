@@ -2,7 +2,6 @@ package com.example.dbapp.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,19 +26,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.dbapp.ui.home.BottomBarComponent
-import com.example.dbapp.ui.home.HomeView
+
+
 @Composable
 fun BottomAppBarNew(navController: NavController) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
-    val activeColor = MaterialTheme.colorScheme.primary// Color para la pestaña activa
-    val defaultColor = Color.Gray // Color para las pestañas inactivas
-    val buttonSize = 56.dp // Tamaño cuadrado del botón
+    val activeColor = MaterialTheme.colorScheme.primary
+    val defaultColor = Color.Gray
+    val buttonSize = 56.dp
 
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()
-            .height(105.dp) // 25% menos de la altura original
+            .height(105.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -47,7 +46,7 @@ fun BottomAppBarNew(navController: NavController) {
         ) {
             IconButton(
                 onClick = { navController.navigate("home") },
-                modifier = Modifier.size(buttonSize) // Botón cuadrado
+                modifier = Modifier.size(buttonSize)
             ) {
                 val isActive = currentRoute == "home"
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -57,7 +56,7 @@ fun BottomAppBarNew(navController: NavController) {
             }
             IconButton(
                 onClick = { navController.navigate("orders") },
-                modifier = Modifier.size(buttonSize) // Botón cuadrado
+                modifier = Modifier.size(buttonSize)
             ) {
                 val isActive = currentRoute == "orders"
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -67,7 +66,7 @@ fun BottomAppBarNew(navController: NavController) {
             }
             IconButton(
                 onClick = { navController.navigate("product") },
-                modifier = Modifier.size(buttonSize) // Botón cuadrado
+                modifier = Modifier.size(buttonSize)
             ) {
                 val isActive = currentRoute == "product"
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -77,7 +76,7 @@ fun BottomAppBarNew(navController: NavController) {
             }
             IconButton(
                 onClick = { navController.navigate("client") },
-                modifier = Modifier.size(buttonSize) // Botón cuadrado
+                modifier = Modifier.size(buttonSize)
             ) {
                 val isActive = currentRoute == "client"
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -87,7 +86,7 @@ fun BottomAppBarNew(navController: NavController) {
             }
             IconButton(
                 onClick = { navController.navigate("menu") },
-                modifier = Modifier.size(buttonSize) // Botón cuadrado
+                modifier = Modifier.size(buttonSize)
             ) {
                 val isActive = currentRoute == "menu"
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {

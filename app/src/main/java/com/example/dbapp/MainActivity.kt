@@ -15,10 +15,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.dbapp.navigation.AppNavGraph
-import com.example.dbapp.viewmodel.ContactViewModel
+import com.example.dbapp.ui.client.ContactViewModel
 import com.example.dbapp.ui.theme.DbAppTheme
 import com.example.dbapp.ui.component.BottomAppBarNew
 import com.example.dbapp.ui.home.HomeView
+import com.example.dbapp.ui.product.ProductViewModel
+import com.example.dbapp.ui.uiutil.MessageSnackbar
+import com.example.dbapp.viewmodel.MessageServiceViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -30,9 +33,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            val contactViewModel = ContactViewModel()
+            val messageViewModel = MessageServiceViewModel()
+            val contactViewModel = ContactViewModel(messageViewModel)
+            val productViewModel = ProductViewModel(messageViewModel)
 
-            val hideBottomBarRoutes = listOf("createContact", "scanner")
+            val hideBottomBarRoutes = listOf("createContact", "scanner", "editCustomer/{customerId}", "createProduct")
 
             DbAppTheme {
                 Scaffold(
@@ -47,8 +52,10 @@ class MainActivity : ComponentActivity() {
                     AppNavGraph(
                         navController = navController,
                         innerPadding = innerPadding,
-                        contactViewModel = contactViewModel
+                        contactViewModel = contactViewModel,
+                        productViewModel = productViewModel
                     )
+                    MessageSnackbar(viewModel = messageViewModel)
                 }
             }
         }

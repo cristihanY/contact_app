@@ -18,7 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.dbapp.model.entity.Customer
-import com.example.dbapp.viewmodel.ContactViewModel
+import com.example.dbapp.viewmodel.MessageServiceViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -70,11 +70,10 @@ fun TopBarComponent(modifier: Modifier = Modifier, navController: NavController)
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp), // Padding horizontal general
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // Espacio entre los elementos
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Texto "Productos" (70%)
         Text(
             text = "Clientes",
             fontSize = 20.sp,
@@ -82,40 +81,38 @@ fun TopBarComponent(modifier: Modifier = Modifier, navController: NavController)
             modifier = Modifier.weight(0.7f),
             textAlign = TextAlign.Start
         )
-        // Espacio entre el texto y los botones
         Spacer(modifier = Modifier.width(8.dp))
-        // Botón circular con ícono +
         IconButton(
             onClick = {
                 navController.navigate("createContact")
             },
             modifier = Modifier
                 .weight(0.15f)
-                .size(40.dp) // Tamaño del botón circular
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(4.dp) // Padding interno para el icono
+                .padding(4.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Add, // Ícono +
+                imageVector = Icons.Default.Add,
                 contentDescription = "Agregar",
                 tint = Color.White
             )
         }
-        // Espacio entre los botones
+
         Spacer(modifier = Modifier.width(8.dp))
-        // Botón circular con ícono de búsqueda
+
         IconButton(
             onClick = { /* Acción para buscar */ },
             modifier = Modifier
                 .weight(0.15f)
-                .size(40.dp) // Tamaño del botón circular
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(4.dp) // Padding interno para el icono
+                .padding(4.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Search, // Ícono de buscar
+                imageVector = Icons.Default.Search,
                 contentDescription = "Buscar",
                 tint = Color.White
             )
@@ -128,7 +125,7 @@ fun ContactListComponent(customers: List<Customer>, navController: NavController
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp) // Padding horizontal
+            .padding(horizontal = 8.dp)
     ) {
         items(customers) { contact ->
             ContactItemComponent(contact, navController)
@@ -141,12 +138,12 @@ fun ContactItemComponent(customer: Customer, navController: NavController, modif
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp) // Padding vertical entre los elementos
+            .padding(vertical = 4.dp)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp), // Padding interno del card
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Espacio entre elementos
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -171,21 +168,19 @@ fun ContactItemComponent(customer: Customer, navController: NavController, modif
             }
             IconButton(
                 onClick = {
-                    // Navega a los detalles del contacto
-                    //navController.navigate("contactDetails/${contact.id}")
-                    println("Navigating to edit customer with ID: ${customer.id}") // Debería imprimir 22
+                    println("Navigating to edit customer with ID: ${customer.id}")
                     navController.navigate("editCustomer/${customer.id}")
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight, // Ícono de flecha derecha
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = "Ver detalles",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )
             }
         }
-        Divider(color = Color.Gray, thickness = 1.dp) // Línea divisoria debajo de cada contacto
+        HorizontalDivider(thickness = 1.dp, color = Color.Gray)
     }
 }
 
@@ -199,7 +194,8 @@ fun formatDate(date: Date): String {
 @Composable
 fun HomeViewPreview() {
     val navController = rememberNavController()
-    val innerPadding = PaddingValues(16.dp) // o el valor que necesites
-    val contactViewModel = ContactViewModel()
+    val innerPadding = PaddingValues(16.dp)
+    val messageViewModel = MessageServiceViewModel()
+    val contactViewModel = ContactViewModel(messageViewModel)
     ClientView(navController = navController, contactViewModel = contactViewModel,  innerPadding = innerPadding)
 }

@@ -1,7 +1,6 @@
 package com.example.dbapp.ui.product
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,10 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -32,6 +29,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,36 +43,28 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.dbapp.model.entity.Product
-import com.example.dbapp.ui.home.HomeView
-import java.util.Date
-
-
-val mockProducts = listOf(
-    Product(1L, "Producto 1", 10.0, 100, "img1.jpg", "1234567890", 5.0, "Descripción del Producto 1", Date()),
-    Product(1L, "Producto 2", 15.5, 200, "img2.jpg", "1234567891", 7.5, "Descripción del Producto 2", Date()),
-    Product(2L, "Producto 3", 7.0, 50, "img3.jpg", "1234567892", 3.5, "Descripción del Producto 3", Date()),
-    Product(2L, "Producto 4", 25.0, 150, "img4.jpg", "1234567893", 12.0, "Descripción del Producto 4", Date()),
-    Product(3L, "Producto 5", 13.0, 80, "img5.jpg", "1234567894", 6.5, "Descripción del Producto 5", Date()),
-    Product(3L, "Producto 6", 25.0, 150, "img6.jpg", "1234567895", 12.5, "Descripción del Producto 6", Date()),
-    Product(4L, "Producto 7", 13.0, 80, "img7.jpg", "1234567896", 6.0, "Descripción del Producto 7", Date())
-)
+import com.example.dbapp.viewmodel.MessageServiceViewModel
 
 @Composable
-fun ProductView(navController: NavController, innerPadding: PaddingValues) {
+fun ProductView(
+    navController: NavController,
+    productViewModel: ProductViewModel,
+    innerPadding: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        TopBarComponent(modifier = Modifier.weight(0.1f))
+        val products by productViewModel.products.collectAsState()
+        TopBarComponent(modifier = Modifier.weight(0.1f), navController = navController)
 
         CategoryChipsComponent(categories = listOf("Electrónica", "Moda", "Hogar", "Libros", "Deportes"), modifier = Modifier.weight(0.08f))
-        ProductListComponent(products = mockProducts, modifier = Modifier.weight(0.82f))
+        ProductListComponent(products = products, modifier = Modifier.weight(0.82f))
     }
 }
 
 @Composable
-fun TopBarComponent(modifier: Modifier = Modifier) {
+fun TopBarComponent(modifier: Modifier = Modifier, navController: NavController) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -93,7 +84,9 @@ fun TopBarComponent(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(8.dp))
         // Botón circular con ícono +
         IconButton(
-            onClick = { /* Acción para agregar */ },
+            onClick = {
+                navController.navigate("createProduct")
+            },
             modifier = Modifier
                 .weight(0.15f)
                 .size(40.dp) // Tamaño del botón circular
@@ -236,6 +229,8 @@ fun ProductItemComponent(product: Product, navController: NavController, modifie
 @Composable
 fun HomeViewPreview() {
     val navController = rememberNavController()
-    val innerPadding = PaddingValues(16.dp) // o el valor que necesites
-    ProductView(navController = navController, innerPadding = innerPadding)
+    val innerPadding = PaddingValues(16.dp)
+    val messageService = MessageServiceViewModel()// o el valor que necesites
+    val productViewModel = ProductViewModel(messageService)
+    ProductView(navController = navController, productViewModel = productViewModel, innerPadding = innerPadding)
 }
