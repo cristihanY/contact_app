@@ -1,36 +1,37 @@
 package com.example.dbapp.ui.client
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import java.util.Date
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.Date
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.Text
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.material3.Button
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import com.example.dbapp.model.entity.Customer
+import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.navigation.compose.rememberNavController
 import com.example.dbapp.ui.client.component.ContactForm
-import com.example.dbapp.ui.client.component.TopBarClientComponent
-import com.example.dbapp.ui.uiutil.DeleteConfirmationDialog
 import com.example.dbapp.viewmodel.MessageServiceViewModel
+import com.example.dbapp.ui.uiutil.DeleteConfirmationDialog
+import androidx.compose.material3.CircularProgressIndicator
+import com.example.dbapp.ui.client.component.TitleForm
+import com.example.dbapp.ui.client.component.TopBarClientComponent
 
 @Composable
 fun EditContactFormScreen(
@@ -79,19 +80,10 @@ fun EditContactFormScreen(
                             showError = true
                         }
                     },
-                    modifier = Modifier.weight(0.1f)
+                    //modifier = Modifier.weight(0.1f)
                 )
 
-                Text(
-                    text = "Editar cliente",
-                    style = MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp),
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-                )
-                Text(
-                    text = "Información del contacto",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp, color = Color.Gray),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                TitleForm(titlePrimary = "Editar cliente", titleSecondary = "Información del contacto")
 
                 ContactForm(
                     name = name,
@@ -141,6 +133,10 @@ fun EditContactFormScreenE() {
     val messageViewModel = MessageServiceViewModel()
     val viewModel = ContactViewModel(messageViewModel)
 
-    EditContactFormScreen(navController = navController, innerPadding = innerPadding, customerId = 1, viewModel = viewModel)
+    EditContactFormScreen(
+        navController = navController,
+        innerPadding = innerPadding,
+        customerId = 1,
+        viewModel = viewModel)
 }
 

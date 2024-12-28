@@ -28,9 +28,9 @@ fun MainScreen(
         ContactList(
             customers = contacts,
             onEditContact = { contact ->
-                editingCustomer = contact // Abre el diálogo de edición
+                editingCustomer = contact
             },
-            onDeleteContact = { id -> contactViewModel.deleteCustomer(id) } // Usa el ViewModel
+            onDeleteContact = { id -> contactViewModel.deleteCustomer(id) }
         )
     }
 
@@ -39,7 +39,7 @@ fun MainScreen(
             customer = contact,
             onDismiss = { editingCustomer = null },
             onSave = { customer ->
-                contactViewModel.updateCustomer(contact.id, customer) // Usa el ViewModel
+                contactViewModel.updateCustomer(contact.id, customer)
                 editingCustomer = null
             }
         )

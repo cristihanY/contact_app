@@ -58,8 +58,18 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.compose.material)
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+
+
+    //Dismis
+
+    implementation ("androidx.compose.material3:material3:1.0.1")
+    implementation ("androidx.compose.foundation:foundation:1.2.1")
+    implementation ("androidx.compose.ui:ui:1.2.1")
+    implementation ("androidx.compose.material:material:1.2.1")
+
 
     //Navigation
 

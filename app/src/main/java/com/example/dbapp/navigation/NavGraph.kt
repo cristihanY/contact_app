@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.dbapp.ui.cart.CartScreen
 import com.example.dbapp.ui.client.ContactViewModel
 import com.example.dbapp.ui.client.ClientView
 import com.example.dbapp.ui.client.CreateContactFormScreen
@@ -14,9 +15,11 @@ import com.example.dbapp.ui.main.MainScreen
 import com.example.dbapp.ui.menu.MenuView
 import com.example.dbapp.ui.orders.OrderView
 import com.example.dbapp.ui.product.CreateProductFormScreen
+import com.example.dbapp.ui.product.EditProductFormScreen
 import com.example.dbapp.ui.product.ProductView
 import com.example.dbapp.ui.product.ProductViewModel
 import com.example.dbapp.ui.scanner.ScannerView
+import com.example.dbapp.ui.search.SearchView
 
 
 @Composable
@@ -39,6 +42,14 @@ fun AppNavGraph(
                 innerPadding = innerPadding
             )
         }
+
+        composable("search") {
+            SearchView(
+                navController =navController,
+                innerPadding = innerPadding
+            )
+        }
+
         composable("scanner") {
             ScannerView(
                 navController =navController,
@@ -48,14 +59,25 @@ fun AppNavGraph(
         composable("orders") { OrderView(
             navController =navController
         ) }
+
         composable("product") { ProductView(
             navController =navController,
             productViewModel = productViewModel,
             innerPadding = innerPadding
         ) }
 
-        composable("createProduct") {
+        composable("productDetails/{productId}") { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")?.toLongOrNull() ?: 0L
 
+            EditProductFormScreen(
+                navController = navController,
+                innerPadding = innerPadding,
+                productId = productId,
+                viewModel = productViewModel
+            )
+        }
+
+        composable("createProduct") {
             CreateProductFormScreen(
                 navController = navController,
                 innerPadding = innerPadding,
@@ -68,6 +90,7 @@ fun AppNavGraph(
             contactViewModel = contactViewModel,
             innerPadding = innerPadding
         ) }
+
         composable("menu") { MenuView(navController) }
 
         composable("createContact") {
@@ -89,6 +112,14 @@ fun AppNavGraph(
                 viewModel = contactViewModel
             )
         }
+        composable("cart") {
+            CartScreen(
+                navController = navController,
+                innerPadding = innerPadding,
+                onSave = {}
+            )
+        }
+
 
     }
 }

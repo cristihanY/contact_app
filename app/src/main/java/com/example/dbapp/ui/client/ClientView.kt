@@ -103,7 +103,7 @@ fun TopBarComponent(modifier: Modifier = Modifier, navController: NavController)
         Spacer(modifier = Modifier.width(8.dp))
 
         IconButton(
-            onClick = { /* Acción para buscar */ },
+            onClick = { navController.navigate("search")  },
             modifier = Modifier
                 .weight(0.15f)
                 .size(40.dp)

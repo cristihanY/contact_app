@@ -16,18 +16,14 @@ class ProductViewModel(
     private val messageService: MessageServiceViewModel
 ) : ViewModel() {
 
-    // Instancia de ProductService
     private val productService = MyApp.getInstance().productService
 
-    // StateFlow para la lista de productos
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     val products: StateFlow<List<Product>> = _products
 
-    // StateFlow para un solo producto
     private val _product = MutableStateFlow<Product?>(null)
     val product: StateFlow<Product?> = _product
 
-    // Estado de carga
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -35,7 +31,6 @@ class ProductViewModel(
         loadProducts()
     }
 
-    // Cargar todos los productos
     private fun loadProducts() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -47,8 +42,7 @@ class ProductViewModel(
         }
     }
 
-    // Obtener un producto por su ID
-    fun getProductById(productId: Int) {
+    fun getProductById(productId: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             val fetchedProduct = withContext(Dispatchers.IO) {
@@ -59,7 +53,6 @@ class ProductViewModel(
         }
     }
 
-    // Agregar un producto nuevo
     fun addProduct(product: Product) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -70,22 +63,20 @@ class ProductViewModel(
         }
     }
 
-    // Actualizar un producto existente
-    fun updateProduct(product: Product) {
+    fun updateProduct(productId: Long, product: Product) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                productService.update(product)
+                productService.updateProduct(productId, product)
             }
             loadProducts()
             messageService.showMessage("El producto ha sido actualizado correctamente", MessageType.SUCCESS)
         }
     }
 
-    // Eliminar un producto
-    fun deleteProduct(product: Product) {
+    fun deleteProduct(productId: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                productService.delete(product)
+                productService.removeProduct(productId)
             }
             loadProducts()
             messageService.showMessage("El producto ha sido eliminado correctamente", MessageType.SUCCESS)

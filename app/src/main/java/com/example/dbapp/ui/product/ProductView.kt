@@ -1,7 +1,7 @@
 package com.example.dbapp.ui.product
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -56,10 +58,12 @@ fun ProductView(
             .padding(innerPadding)
     ) {
         val products by productViewModel.products.collectAsState()
-        TopBarComponent(modifier = Modifier.weight(0.1f), navController = navController)
+        TopBarComponent(
+            modifier = Modifier.weight(0.1f),
+            navController = navController)
 
-        CategoryChipsComponent(categories = listOf("Electrónica", "Moda", "Hogar", "Libros", "Deportes"), modifier = Modifier.weight(0.08f))
-        ProductListComponent(products = products, modifier = Modifier.weight(0.82f))
+        FilterChipsComponent(categories = listOf("Creación (el más reciente primero)"), modifier = Modifier.weight(0.08f))
+        ProductListComponent(products = products, navController = navController, modifier = Modifier.weight(0.82f))
     }
 }
 
@@ -68,11 +72,10 @@ fun TopBarComponent(modifier: Modifier = Modifier, navController: NavController)
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp), // Padding horizontal general
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // Espacio entre los elementos
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Texto "Productos" (70%)
         Text(
             text = "Productos",
             fontSize = 20.sp,
@@ -80,40 +83,36 @@ fun TopBarComponent(modifier: Modifier = Modifier, navController: NavController)
             modifier = Modifier.weight(0.7f),
             textAlign = TextAlign.Start
         )
-        // Espacio entre el texto y los botones
         Spacer(modifier = Modifier.width(8.dp))
-        // Botón circular con ícono +
         IconButton(
             onClick = {
                 navController.navigate("createProduct")
             },
             modifier = Modifier
                 .weight(0.15f)
-                .size(40.dp) // Tamaño del botón circular
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(4.dp) // Padding interno para el icono
+                .padding(4.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Add, // Ícono +
+                imageVector = Icons.Default.Add,
                 contentDescription = "Agregar",
                 tint = Color.White
             )
         }
-        // Espacio entre los botones
         Spacer(modifier = Modifier.width(8.dp))
-        // Botón circular con ícono de búsqueda
         IconButton(
-            onClick = { /* Acción para buscar */ },
+            onClick = { navController.navigate("search") },
             modifier = Modifier
                 .weight(0.15f)
-                .size(40.dp) // Tamaño del botón circular
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(4.dp) // Padding interno para el icono
+                .padding(4.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Search, // Ícono de buscar
+                imageVector = Icons.Default.Search,
                 contentDescription = "Buscar",
                 tint = Color.White
             )
@@ -123,7 +122,7 @@ fun TopBarComponent(modifier: Modifier = Modifier, navController: NavController)
 
 
 @Composable
-fun CategoryChipsComponent(categories: List<String>, modifier: Modifier = Modifier) {
+fun FilterChipsComponent(categories: List<String>, modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -134,39 +133,56 @@ fun CategoryChipsComponent(categories: List<String>, modifier: Modifier = Modifi
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(categories) { category ->
-                Chip(category = category)
+                ChipWithIcons(category = category)
             }
         }
     }
 }
 
-
 @Composable
-fun Chip(category: String, modifier: Modifier = Modifier) {
-    Card(
-        shape = RoundedCornerShape(26.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        modifier = modifier.padding(horizontal = 4.dp)
+fun ChipWithIcons(category: String) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White.copy(alpha = 0.12f))
+            .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp)) // Borde de color
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            imageVector = Icons.Default.DateRange,
+            contentDescription = "Fecha",
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
         Text(
             text = category,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Icon(
+            imageVector = Icons.Default.ArrowDropDown,
+            contentDescription = "Flecha hacia abajo",
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }
 
-
 @Composable
-fun ProductListComponent(products: List<Product>, modifier: Modifier = Modifier) {
+fun ProductListComponent(products: List<Product>, navController: NavController, modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp) // Padding general
+            .padding(horizontal = 8.dp)
     ) {
         items(products) { product ->
-            val navController = rememberNavController()
             ProductItemComponent(product, navController)
         }
     }
@@ -178,13 +194,13 @@ fun ProductItemComponent(product: Product, navController: NavController, modifie
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp), // Padding entre los elementos
-        elevation = CardDefaults.elevatedCardElevation(4.dp) // Usar CardDefaults.elevatedCardElevation
+            .padding(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(4.dp)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp), // Padding interno del card
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Espacio entre elementos
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -197,23 +213,23 @@ fun ProductItemComponent(product: Product, navController: NavController, modifie
                         .clip(CircleShape)
                         .align(Alignment.CenterVertically)
                 ) {
-                    // Placeholder for image
                     Text("Img", Modifier.align(Alignment.Center))
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(text = product.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    Text(text = "Price: ${product.price}", fontSize = 14.sp)
+                    Text(text = "PEN ${product.price}", fontSize = 14.sp)
                     Text(text = "Quantity: ${product.quantity}", fontSize = 14.sp)
                 }
             }
             IconButton(
                 onClick = {
-                    //navController.navigate("productDetails/${product.id}")
+                    navController.navigate("productDetails/${product.id}")
+                    println("THIS CLICK")
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight, // Ícono de flecha derecha
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = "Ver detalles",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.align(Alignment.CenterVertically)
@@ -222,8 +238,6 @@ fun ProductItemComponent(product: Product, navController: NavController, modifie
         }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable

@@ -1,27 +1,28 @@
 package com.example.dbapp.ui.client
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import java.util.Date
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.Modifier
+import androidx.compose.material3.Text
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import com.example.dbapp.model.entity.Customer
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.navigation.compose.rememberNavController
 import com.example.dbapp.ui.client.component.ContactForm
+import com.example.dbapp.ui.client.component.TitleForm
 import com.example.dbapp.ui.client.component.TopBarClientComponent
-import java.util.Date
 
 @Composable
 fun CreateContactFormScreen(
@@ -64,20 +65,9 @@ fun CreateContactFormScreen(
                     showError = true
                 }
             },
-            modifier = Modifier.weight(0.1f)
         )
 
-        Text(
-            text = "Agregar cliente",
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-        )
-
-        Text(
-            text = "Información del contacto",
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp, color = Color.Gray),
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        TitleForm(titlePrimary = "Agregar cliente", titleSecondary = "Información del contacto")
 
         ContactForm(
             name = name,

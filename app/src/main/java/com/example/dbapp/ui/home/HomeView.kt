@@ -3,7 +3,6 @@ package com.example.dbapp.ui.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -62,14 +61,11 @@ fun HomeView(navController: NavController, innerPadding: PaddingValues) {
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        // Componente superior (10%)
         TopBarComponent(navController = navController, modifier = Modifier.weight(0.1f))
 
-        // Carrusel (80%)
         CarouselComponent(modifier = Modifier.weight(0.8f))
 
-        // Componente inferior (10%)
-        BottomBarComponent(modifier = Modifier.weight(0.1f))
+        BottomBarComponent(modifier = Modifier.weight(0.1f), navController = navController)
     }
 }
 
@@ -78,11 +74,10 @@ fun TopBarComponent(navController: NavController, modifier: Modifier = Modifier)
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp), // Padding horizontal general
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // Espacio entre los elementos
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Texto "My Store" (70%)
         Text(
             text = "My Store",
             fontSize = 20.sp,
@@ -91,42 +86,38 @@ fun TopBarComponent(navController: NavController, modifier: Modifier = Modifier)
                 .weight(0.7f),
             textAlign = TextAlign.Start
         )
-
-        // Espacio entre el texto y los botones
+        
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Botón circular con ícono de escritura (15%)
         IconButton(
             onClick = { navController.navigate("scanner") },
             modifier = Modifier
                 .weight(0.15f)
-                .size(40.dp) // Tamaño del botón circular
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(4.dp) // Padding interno para el icono
+                .padding(4.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Create, // Ícono de escribir
+                imageVector = Icons.Default.Create,
                 contentDescription = "Escribir",
                 tint = Color.White
             )
         }
 
-        // Espacio entre los botones
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Botón circular con ícono de búsqueda (15%)
         IconButton(
-            onClick = { /* Acción para buscar */ },
+            onClick = { navController.navigate("search") },
             modifier = Modifier
                 .weight(0.15f)
-                .size(40.dp) // Tamaño del botón circular
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(4.dp) // Padding interno para el icono
+                .padding(4.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Search, // Ícono de buscar
+                imageVector = Icons.Default.Search,
                 contentDescription = "Buscar",
                 tint = Color.White
             )
@@ -140,7 +131,7 @@ fun CarouselComponent(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp) // Espacio para los indicadores
+            .padding(bottom = 16.dp)
     ) {
         val listState: LazyListState = rememberLazyListState()
         val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
@@ -205,14 +196,14 @@ fun CarouselComponent(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun BottomBarComponent(modifier: Modifier = Modifier) {
+fun BottomBarComponent(modifier: Modifier = Modifier, navController: NavController) {
     Box(
         modifier = modifier
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         Button(
-            onClick = { /* Lógica para agregar al carrito */ },
+            onClick = { navController.navigate("cart") },
             modifier = Modifier.fillMaxWidth(0.9f)
         ) {
             Text("Ir al carrito")
@@ -237,7 +228,6 @@ val pages = listOf(
         CardItemData("Producto D", Icons.Default.Info),
         CardItemData("Producto E", Icons.Default.Settings)
     ),
-    // Añade más páginas con otros productos si es necesario
 )
 
 
@@ -287,6 +277,6 @@ fun CardItem(title: String, icon: ImageVector) {
 @Composable
 fun HomeViewPreview() {
     val navController = rememberNavController()
-    val innerPadding = PaddingValues(16.dp) // o el valor que necesites
+    val innerPadding = PaddingValues(16.dp)
     HomeView(navController = navController, innerPadding = innerPadding)
 }

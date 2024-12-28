@@ -7,17 +7,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.example.dbapp.navigation.AppNavGraph
-import com.example.dbapp.ui.client.ContactViewModel
+import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.Composable
 import com.example.dbapp.ui.theme.DbAppTheme
+import com.example.dbapp.navigation.AppNavGraph
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.dbapp.ui.client.ContactViewModel
 import com.example.dbapp.ui.component.BottomAppBarNew
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.dbapp.ui.home.HomeView
 import com.example.dbapp.ui.product.ProductViewModel
 import com.example.dbapp.ui.uiutil.MessageSnackbar
@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
             val contactViewModel = ContactViewModel(messageViewModel)
             val productViewModel = ProductViewModel(messageViewModel)
 
-            val hideBottomBarRoutes = listOf("createContact", "scanner", "editCustomer/{customerId}", "createProduct")
+            val hideBottomBarRoutes = listOf("createContact", "scanner", "editCustomer/{customerId}",
+                "createProduct", "productDetails/{productId}", "search", "cart")
 
             DbAppTheme {
                 Scaffold(
@@ -65,7 +66,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun GreetingPreview() {
         val navController = rememberNavController()
-        val innerPadding = PaddingValues(16.dp) // o el valor que necesites
+        val innerPadding = PaddingValues(16.dp)
         HomeView(navController = navController, innerPadding = innerPadding)
     }
 

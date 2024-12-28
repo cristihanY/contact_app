@@ -54,15 +54,14 @@ fun ProductForm(
     onDescriptionChange: (String) -> Unit,
     showError: Boolean,
     isCreateForm: Boolean,
-    categories: List<Category>,  // Lista de categorías
-    selectedCategoryId: Long,    // ID de la categoría seleccionada
-    onCategorySelected: (Long) -> Unit, // Acción para manejar la selección
+    categories: List<Category>,
+    selectedCategoryId: Long,
+    onCategorySelected: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedCategoryName by remember { mutableStateOf("Seleccionar categoría") }
 
-    // Buscar el nombre de la categoría seleccionada
     val selectedCategory = categories.find { it.id == selectedCategoryId }
     selectedCategoryName = selectedCategory?.name ?: "Seleccionar categoría"
 
@@ -71,7 +70,6 @@ fun ProductForm(
             .fillMaxSize()
             .padding(horizontal = 18.dp)
     ) {
-        // Campo para el nombre del producto
         OutlinedTextField(
             value = name,
             onValueChange = onNameChange,
@@ -91,7 +89,6 @@ fun ProductForm(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo para el precio
         OutlinedTextField(
             value = price,
             onValueChange = onPriceChange,
@@ -104,7 +101,6 @@ fun ProductForm(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo para la cantidad
         OutlinedTextField(
             value = quantity,
             onValueChange = onQuantityChange,
@@ -117,7 +113,6 @@ fun ProductForm(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // DropdownMenu para seleccionar la categoría
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -154,7 +149,6 @@ fun ProductForm(
                     }
                 }
             }
-            // Botón para abrir el menú de selección de categorías
             IconButton(
                 onClick = { expanded = !expanded },
                 modifier = Modifier.align(Alignment.CenterEnd)
@@ -168,7 +162,6 @@ fun ProductForm(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Otros campos del formulario
         OutlinedTextField(
             value = img,
             onValueChange = onImgChange,

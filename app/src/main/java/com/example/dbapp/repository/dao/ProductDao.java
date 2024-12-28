@@ -14,7 +14,7 @@ public interface ProductDao {
     List<Product> getAll();
 
     @Query("SELECT * FROM products WHERE id = :id")
-    Product getById(int id);
+    Product getById(long id);
 
     @Insert
     long insert(Product product);
@@ -24,4 +24,7 @@ public interface ProductDao {
 
     @Delete
     void delete(Product product);
+
+    @Query("DELETE FROM products WHERE id = :id")
+    void deleteById(long id);
 }

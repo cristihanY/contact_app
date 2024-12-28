@@ -1,34 +1,34 @@
 package com.example.dbapp.ui.camera
 
-import android.content.Context
 import android.util.Log
+import android.content.Context
 import androidx.annotation.OptIn
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ExperimentalGetImage
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Modifier
+import androidx.camera.core.Preview
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.Text
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.CameraSelector
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Path
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
@@ -40,14 +40,11 @@ import com.google.mlkit.vision.common.InputImage
 import androidx.lifecycle.LifecycleOwner
 import com.google.mlkit.vision.barcode.BarcodeScanner
 
-
-
 @Composable
 fun CameraView(context: Context, cameraSelector: CameraSelector) {
     val lifecycleOwner = LocalLifecycleOwner.current
     var barcodeResult by remember { mutableStateOf<String?>(null) }
 
-    // Agregar DisposableEffect para liberar la cámara cuando se salga de la vista
     DisposableEffect(Unit) {
         onDispose {
             releaseCamera(context)
@@ -84,7 +81,6 @@ fun CameraView(context: Context, cameraSelector: CameraSelector) {
     }
 }
 
-// Función que inicia la cámara con el selector especificado
 @OptIn(ExperimentalGetImage::class)
 private fun startCamera(
     context: Context,
@@ -133,12 +129,11 @@ private fun startCamera(
     }, ContextCompat.getMainExecutor(context))
 }
 
-// Función que libera la cámara llamando a unbindAll
 private fun releaseCamera(context: Context) {
     val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
     cameraProviderFuture.addListener({
         val cameraProvider = cameraProviderFuture.get()
-        cameraProvider.unbindAll() // Libera todos los recursos de la cámara
+        cameraProvider.unbindAll()
     }, ContextCompat.getMainExecutor(context))
 }
 
@@ -174,24 +169,20 @@ fun ScannerOverlay(modifier: Modifier = Modifier) {
             val frameTop = (size.height - frameSize) / 2
             val frameLeft = (size.width - frameSize) / 2
 
-            // Desvanecimiento alrededor del área de interés
             drawRect(color = overlayColor, size = size)
 
-            // Recuadro transparente con esquinas redondeadas para el área de interés
             drawRoundRect(
                 color = Color.Transparent,
                 topLeft = Offset(frameLeft, frameTop),
                 size = Size(frameSize, frameSize),
-                cornerRadius = CornerRadius(12.dp.toPx(), 12.dp.toPx()), // Esquinas redondeadas
+                cornerRadius = CornerRadius(12.dp.toPx(), 12.dp.toPx()),
                 blendMode = BlendMode.Clear
             )
 
-            // Estilo para las esquinas
             val cornerStyle = Stroke(width = 4.dp.toPx())
             val cornerRadius = 12.dp.toPx()
             val extensionLength = 50.dp.toPx()
 
-            // Dibuja las esquinas del recuadro con líneas continuas
             drawPath(
                 path = Path().apply {
                     moveTo(frameLeft, frameTop + cornerRadius + extensionLength)

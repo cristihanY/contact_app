@@ -42,18 +42,18 @@ import com.example.dbapp.ui.camera.CameraView
 
 @Composable
 fun ScannerView(navController: NavController, innerPadding: PaddingValues) {
-    // Estado para el CameraSelector
+
     var cameraSelector by remember { mutableStateOf(CameraSelector.DEFAULT_BACK_CAMERA) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding) // Aplicar innerPadding para ajustar el contenido
+            .padding(innerPadding)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             CameraPermission {
                 val context = LocalContext.current
-                CameraView(context, cameraSelector) // Pasar el cameraSelector a CameraView
+                CameraView(context, cameraSelector)
             }
         }
 
@@ -72,7 +72,6 @@ fun ScannerView(navController: NavController, innerPadding: PaddingValues) {
 
         IconButton(
             onClick = {
-                // Cambia entre cámara frontal y trasera
                 cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
                     CameraSelector.DEFAULT_FRONT_CAMERA
                 } else {
@@ -116,21 +115,18 @@ fun ScannerView(navController: NavController, innerPadding: PaddingValues) {
     }
 }
 
-// Composable para la tarjeta del producto
 @Composable
 fun ProductCard(productName: String) {
     Box(
         modifier = Modifier
-            .size(40.dp) // Tamaño de la tarjeta
-            .background(Color.LightGray, RoundedCornerShape(8.dp)) // Fondo y bordes redondeados
-            .padding(8.dp), // Espaciado interno
-        contentAlignment = Alignment.Center // Centrar el texto en la tarjeta
+            .size(40.dp)
+            .background(Color.LightGray, RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Text(text = productName, fontSize = 12.sp) // Texto del producto
+        Text(text = productName, fontSize = 12.sp)
     }
 }
-
-// Composable para manejar el permiso de la cámara
 
 @Preview(showBackground = true)
 @Composable

@@ -77,7 +77,6 @@ fun AddContactForm(onAddContact: (Customer) -> Unit) {
                     )
                     onAddContact(newCustomer)
 
-                    // Clear fields
                     name = ""
                     lastName = ""
                     email = ""
@@ -110,7 +109,6 @@ fun ContactList(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Column for contact details
                     Column(
                         modifier = Modifier.weight(1f)
                     ) {
@@ -130,7 +128,6 @@ fun ContactList(
                         )
                     }
 
-                    // Row for edit and delete icons
                     Row(horizontalArrangement = Arrangement.End) {
                         IconButton(onClick = { onEditContact(contact) }) {
                             Icon(Icons.Default.Edit, contentDescription = "Edit")
@@ -141,7 +138,6 @@ fun ContactList(
                     }
                 }
 
-                // Divider to separate items
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 8.dp),
                     thickness = 1.dp,
@@ -172,7 +168,6 @@ fun EditContactDialog(
         },
         confirmButton = {
             Button(onClick = {
-                // Crea un nuevo objeto Customer con el nombre actualizado
                 val updatedCustomer = Customer(
                     newName,
                     customer.lastName,
@@ -192,7 +187,6 @@ fun EditContactDialog(
         }
     )
 }
-
 
 fun formatDate(date: Date): String {
     val dateFormat = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())

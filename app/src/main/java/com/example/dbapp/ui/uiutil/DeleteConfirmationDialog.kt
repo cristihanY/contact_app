@@ -1,9 +1,9 @@
 package com.example.dbapp.ui.uiutil
 
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.AlertDialog
 
 @Composable
 fun DeleteConfirmationDialog(
@@ -12,8 +12,8 @@ fun DeleteConfirmationDialog(
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text("Eliminar cliente") },
-        text = { Text("¿Está seguro de que desea eliminar este cliente? Esta acción es irreversible.") },
+        title = { Text("Eliminar registro") },
+        text = { Text("¿Está seguro de que desea eliminar este registro? Esta acción es irreversible.") },
         confirmButton = {
             Button(onClick = onConfirm) {
                 Text("Eliminar")
