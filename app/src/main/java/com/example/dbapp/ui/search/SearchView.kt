@@ -213,7 +213,7 @@ fun SearchBarComponent(
                 )
                 .focusRequester(focusRequester)
                 .onFocusChanged { isFocused.value = it.isFocused },
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 cursorColor = MaterialTheme.colorScheme.primary
