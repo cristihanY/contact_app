@@ -17,12 +17,22 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(long orderId, Long productId, String name, int quantity, double price) {
+    public OrderItem(long id, long orderId, Long productId, String name,
+                     int quantity, double price) {
+        this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getOrderId() {

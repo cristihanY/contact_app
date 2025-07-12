@@ -1,28 +1,36 @@
 package com.example.dbapp.model.entity;
 
 import java.util.Date;
+import java.math.BigDecimal;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+import com.example.dbapp.converter.BigDecimalConverter;
 
 @Entity(tableName = "products")
+@TypeConverters({BigDecimalConverter.class})
 public class Product {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
     private Long categoryId;
     private String name;
-    private double price;
+    private BigDecimal price;
     private int quantity;
     private String img;
     private String barcode;
-    private double costPrice;
+    private BigDecimal costPrice;
     private String description;
     private Date createdAt;
+
 
     public Product() {
     }
 
-    public Product(Long categoryId, String name, double price, int quantity, String img, String barcode, double costPrice, String description, Date createdAt) {
+    public Product(Long categoryId, String name,
+                   BigDecimal price, int quantity, String img,
+                   String barcode, BigDecimal costPrice, String description,
+                   Date createdAt) {
         this.categoryId = categoryId;
         this.name = name;
         this.price = price;
@@ -34,20 +42,20 @@ public class Product {
         this.createdAt = createdAt;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getName() {
@@ -58,11 +66,11 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -90,11 +98,11 @@ public class Product {
         this.barcode = barcode;
     }
 
-    public double getCostPrice() {
+    public BigDecimal getCostPrice() {
         return costPrice;
     }
 
-    public void setCostPrice(double costPrice) {
+    public void setCostPrice(BigDecimal costPrice) {
         this.costPrice = costPrice;
     }
 

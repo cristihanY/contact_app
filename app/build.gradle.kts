@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.dbapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.dbapp"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -32,11 +32,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
     buildFeatures {
         compose = true
@@ -60,42 +62,47 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.compose.material)
-    kapt("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
 
-    implementation("androidx.compose.compiler:compiler:1.5.11")
+    implementation("androidx.compose.compiler:compiler:1.5.15")
     //Dismis
 
-    implementation ("androidx.compose.material3:material3:1.0.1")
-    implementation ("androidx.compose.foundation:foundation:1.2.1")
-    implementation ("androidx.compose.ui:ui:1.2.1")
-    implementation ("androidx.compose.material:material:1.2.1")
+    implementation ("androidx.compose.material3:material3:1.3.2")
+    implementation ("androidx.compose.foundation:foundation:1.8.3")
+    implementation ("androidx.compose.ui:ui:1.8.3")
+    implementation ("androidx.compose.material:material:1.8.3")
 
 
     //Navigation
 
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
 
 
     //coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
+    //json
+    implementation("com.google.code.gson:gson:2.10.1")
 
     //Scanner
-    implementation("com.google.mlkit:barcode-scanning:17.0.3")
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
 
     //Lombok
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-
+    //mapper
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     //camerax
-    implementation("androidx.camera:camera-core:1.1.0")
-    implementation("androidx.camera:camera-camera2:1.1.0")
-    implementation("androidx.camera:camera-lifecycle:1.1.0")
-    implementation("androidx.camera:camera-view:1.1.0")
-    implementation("androidx.camera:camera-extensions:1.1.0")
-    implementation("com.google.accompanist:accompanist-permissions:0.24.13-rc")
+    implementation("androidx.camera:camera-core:1.4.2")
+    implementation("androidx.camera:camera-camera2:1.4.2")
+    implementation("androidx.camera:camera-lifecycle:1.4.2")
+    implementation("androidx.camera:camera-view:1.4.2")
+    implementation("androidx.camera:camera-extensions:1.4.2")
+    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
 
 
     implementation(libs.androidx.ui)

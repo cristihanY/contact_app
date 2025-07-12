@@ -1,4 +1,4 @@
-package com.example.dbapp.ui.product
+package com.example.dbapp.ui.orders
 
 import android.util.Log
 import android.content.Context
@@ -19,7 +19,7 @@ import com.example.dbapp.core.preference.saveCartIdToPreferences
 import com.example.dbapp.core.preference.getCartIdFromPreferences
 
 
-class ProductViewModel(
+class OrderViewModel(
     private val messageService: MessageServiceViewModel,
 ) : ViewModel() {
 

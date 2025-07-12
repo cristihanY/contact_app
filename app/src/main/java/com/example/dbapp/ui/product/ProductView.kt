@@ -1,5 +1,6 @@
 package com.example.dbapp.ui.product
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -239,6 +240,7 @@ fun ProductItemComponent(product: Product, navController: NavController, modifie
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 fun HomeViewPreview() {

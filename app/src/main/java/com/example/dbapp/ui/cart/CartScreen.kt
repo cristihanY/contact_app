@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DismissDirection
@@ -43,12 +41,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dbapp.model.entity.Order
-import androidx.navigation.compose.rememberNavController
 import com.example.dbapp.ui.client.component.TopBarCartComponent
 import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
@@ -56,11 +52,15 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberDismissState
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.LaunchedEffect
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.compose.foundation.border
-import androidx.compose.material.FractionalThreshold
+import androidx.compose.foundation.clickable
+import androidx.compose.material.SwipeToDismiss
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
+import androidx.compose.ui.platform.LocalContext
+import com.example.dbapp.model.dto.CartItemDto
+import com.example.dbapp.model.dto.CartSummary
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -97,8 +97,7 @@ fun <T> SwipeToDeleted(
             shrinkTowards = Alignment.Top
         ) + fadeOut()
     ) {
-        println("THIS IS $state")
-        androidx.compose.material.SwipeToDismiss(
+        SwipeToDismiss(
             state = state,
             background = {
                 Deleting(swipeDismissState = state)
@@ -106,10 +105,7 @@ fun <T> SwipeToDeleted(
             dismissContent = {
                 content(item)
             },
-            directions = setOf(DismissDirection.EndToStart),
-            dismissThresholds = {
-                FractionalThreshold(0.5f) // Cambia este valor para ajustar el umbral (50% del ancho)
-            }
+            directions = setOf(DismissDirection.EndToStart)
         )
     }
 }
@@ -142,146 +138,162 @@ fun Deleting(
 fun CartScreen(
     navController: NavController,
     innerPadding: PaddingValues,
+    viewModel: CartViewModel,
     onSave: (Order) -> Unit
 ) {
+    val context = LocalContext.current
 
-
-    val productsh = remember {
-        mutableStateListOf(
-
-            Product(name = "Producto 1", price = "5.30", imageUrl = "https://via.placeholder.com/150", notificationCount = 22),
-            Product(name = "Producto 2", price = "8.00", imageUrl = "https://via.placeholder.com/150", notificationCount = 1),
-            Product(name = "Producto 3", price = "12.50", imageUrl = "https://via.placeholder.com/150", notificationCount = 1),
-            Product(name = "Producto 4", price = "5.30", imageUrl = "https://via.placeholder.com/150", notificationCount = 22),
-            Product(name = "Producto 5", price = "8.00", imageUrl = "https://via.placeholder.com/150", notificationCount = 1),
-            Product(name = "Producto 6", price = "12.50", imageUrl = "https://via.placeholder.com/150", notificationCount = 1),
-            Product(name = "Producto 7", price = "5.30", imageUrl = "https://via.placeholder.com/150", notificationCount = 22),
-            Product(name = "Producto 8", price = "8.00", imageUrl = "https://via.placeholder.com/150", notificationCount = 1),
-            Product(name = "Producto 9", price = "12.50", imageUrl = "https://via.placeholder.com/150", notificationCount = 1)
-
-
-        )
+    LaunchedEffect(Unit) {
+        viewModel.initCart(context)
     }
+    val isLoading by viewModel.isLoading.collectAsState()
+    val cart by viewModel.cart.collectAsState()
+    val countCartItem by viewModel.countCartItems.collectAsState()
 
     Column (
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        Column (
-            modifier = Modifier
-                .weight(1f)
-        ) {
-            // TopBar
-            TopBarCartComponent(
-                navController = navController
-            )
-
-            SecondaryTopBar()
-
-            LazyColumn(
+        // TopBar
+        TopBarCartComponent(
+            navController = navController
+        )
+        if (isLoading) {
+            Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                item {
-                    Row (
-                        modifier = Modifier
-                            .border(1.dp, color = Color.Gray, shape = RoundedCornerShape(8.dp))
-                            .padding(12.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(vertical = 12.dp),
-                            text = "Agregar cliente")
+                CircularProgressIndicator(
+                    modifier = Modifier.size(48.dp) // Tamaño pequeño
+                )
+            }
+        } else {
+            if (cart.id != 0L) {
+                val items = remember(cart) {
+                    mutableStateListOf<CartItemDto>().apply {
+                        clear()
+                        addAll(cart.item)
                     }
-
                 }
-
-                item{
-                    Spacer(modifier = Modifier.padding(vertical = 6.dp))
-                }
-
-
-                item {
-                    Column(
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Column (
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .border(
-                                1.dp,
-                                color = Color.Gray,
-                                shape = RoundedCornerShape(8.dp)
-                            ) // Borde del grupo
-                            .padding(12.dp)
+                            .weight(1f)
                     ) {
-                        productsh.forEach { product ->
-                            key(product) { // Usamos `key` para cada producto
-                                SwipeToDeleted(
-                                    item = product,
-                                    onDelete = { productsh -= product }
+                        SecondaryTopBar(onDeleteCart = { viewModel.deleteCart(context) })
+                        LazyColumn(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            item {
+                                Row (
+                                    modifier = Modifier
+                                        .border(1.dp, color = Color.Gray, shape = RoundedCornerShape(8.dp))
+                                        .padding(12.dp)
                                 ) {
-                                    ProductItem(product = product)
+                                    Text(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(vertical = 12.dp),
+                                        text = "Agregar cliente")
+                                }
+
+                            }
+
+                            item{
+                                Spacer(modifier = Modifier.padding(vertical = 6.dp))
+                            }
+
+                            item {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .border(
+                                            1.dp,
+                                            color = Color.Gray,
+                                            shape = RoundedCornerShape(8.dp)
+                                        ) // Borde del grupo
+                                        .padding(12.dp)
+                                ) {
+                                    items.forEach { detail ->
+                                        key(detail) { // Usamos `key` para cada producto
+                                            SwipeToDeleted(
+                                                item = detail,
+                                                onDelete = {
+                                                    viewModel.deleteItemCart(detail.id)
+                                                    items -= detail
+                                                }
+                                            ) {
+                                                ProductItem(cartItem = detail) {
+                                                    navController.navigate("cartItem/${detail.id}")
+                                                }
+                                            }
+                                        }
+                                    }
+                                    ResumeCart(summary = cart.summary)
                                 }
                             }
                         }
-                        ResumeCart()
                     }
-                }
 
+                    ButtonBarCart(
+                        modifier = Modifier.weight(0.15f),
+                        summary = cart.summary,
+                        cartItemCount = countCartItem,
+                        onNavigate = ({ navController.navigate("pay") }))
+                }
             }
         }
-
-        ButtonBarCart(modifier = Modifier.weight(0.15f))
-
     }
-
 }
 
 @Composable
-fun ProductItem(product: Product) {
+fun ProductItem(cartItem: CartItemDto, onClick: () -> Unit ) {
 
     Column  {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { onClick() }
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            ProductImageBuilder(product = product)
+            ProductImageBuilder(cartItem = cartItem)
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Nombre del producto
             Text(
-                text = product.name,
+                text = cartItem.product.name,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold  // Aquí se aplica el estilo en negrita
+                    fontWeight = FontWeight.Bold
                 ),
                 modifier = Modifier.weight(1f)
             )
 
-            // Precio del producto
             Text(
-                text = "PEN ${product.price}",
+                text = "PEN ${cartItem.product.price}",
                 style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold  // Aquí se aplica el estilo en negrita
+                    fontWeight = FontWeight.Bold
                 ),
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
-
         HorizontalDivider()
-
     }
 
 }
 
 @Composable
-fun ProductImageBuilder(modifier: Modifier = Modifier, product: Product) {
+fun ProductImageBuilder(modifier: Modifier = Modifier, cartItem: CartItemDto) {
     Box(
         modifier = Modifier.size(64.dp)
     ) {
@@ -299,7 +311,7 @@ fun ProductImageBuilder(modifier: Modifier = Modifier, product: Product) {
             )
         }
 
-        if (product.notificationCount!! > 0) {
+        if (cartItem.quantity!! > 0) {
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)  // Mueve el contador a la esquina superior derecha
@@ -324,7 +336,7 @@ fun ProductImageBuilder(modifier: Modifier = Modifier, product: Product) {
                         .background(Color.Red, shape = CircleShape)   // Borde blanco para el círculo rojo
                 ) {
                     Text(
-                        text = product.notificationCount.toString(),
+                        text = cartItem.quantity.toString(),
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.Bold  // Aquí se aplica el estilo en negrita
                         ),
@@ -340,7 +352,8 @@ fun ProductImageBuilder(modifier: Modifier = Modifier, product: Product) {
 }
 
 @Composable
-fun SecondaryTopBar(modifier: Modifier = Modifier) {
+fun SecondaryTopBar(modifier: Modifier = Modifier,
+                    onDeleteCart: () -> Unit,) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -353,49 +366,14 @@ fun SecondaryTopBar(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.labelLarge.copy(fontSize = 22.sp),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
         )
-        IconButton(onClick = { /* Acción del icono trash */ }) {
+        IconButton(onClick = { onDeleteCart() }) {
             Icon(Icons.Default.Delete, contentDescription = "Eliminar")
         }
     }
 }
 
-data class Product(
-    val name: String,
-    val price: String,
-    val imageUrl: String,
-    val notificationCount: Int? = null
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readInt()
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeString(price)
-        parcel.writeString(imageUrl)
-        parcel.writeInt(notificationCount ?: 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Product> {
-        override fun createFromParcel(parcel: Parcel): Product {
-            return Product(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Product?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
 @Composable
-fun ResumeCart(modifier: Modifier = Modifier) {
+fun ResumeCart(modifier: Modifier = Modifier, summary: CartSummary) {
     Column(
         modifier = modifier
             .fillMaxWidth(),
@@ -418,7 +396,7 @@ fun ResumeCart(modifier: Modifier = Modifier) {
                 )
             )
             Text(
-                text = "PEN 24.00",
+                text = "PEN ${summary.subTotal}",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -442,7 +420,7 @@ fun ResumeCart(modifier: Modifier = Modifier) {
                 )
             )
             Text(
-                text = "PEN 0.00",
+                text = "PEN ${summary.taxAmount}",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -453,9 +431,8 @@ fun ResumeCart(modifier: Modifier = Modifier) {
     }
 }
 
-
 @Composable
-fun ButtonBarCart(modifier: Modifier = Modifier) {
+fun ButtonBarCart(modifier: Modifier = Modifier, summary: CartSummary, cartItemCount: Int,   onNavigate: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth(),
@@ -482,7 +459,7 @@ fun ButtonBarCart(modifier: Modifier = Modifier) {
                     )
                 )
                 Text(
-                    text = "2 artículos",
+                    text = if (cartItemCount == 1) "$cartItemCount artículo" else "$cartItemCount artículos",
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontWeight = FontWeight.SemiBold  // Aquí se aplica el estilo en negrita
                     ),
@@ -490,7 +467,7 @@ fun ButtonBarCart(modifier: Modifier = Modifier) {
                 )
             }
             Text(
-                text = "PEN 24.00",
+                text = "PEN ${summary.total}",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold  // Aquí se aplica el estilo en negrita
                 ),
@@ -499,23 +476,12 @@ fun ButtonBarCart(modifier: Modifier = Modifier) {
         }
 
         Button(
-            onClick = { /* Acción para la pantalla de pago */ },
+            onClick = { onNavigate()  },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
             Text(text = "Pantalla de pago")
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CartScreenPreview() {
-
-    val navController = rememberNavController()
-    val innerPadding = PaddingValues(16.dp)
-    CartScreen(navController = navController, innerPadding = innerPadding) { contact ->
-
     }
 }

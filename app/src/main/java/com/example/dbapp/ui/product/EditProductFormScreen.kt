@@ -2,6 +2,7 @@ package com.example.dbapp.ui.product
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -54,6 +55,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,6 +71,7 @@ import com.example.dbapp.ui.client.component.TopBarDinamicComponent
 import com.example.dbapp.ui.product.component.ProductForm
 import com.example.dbapp.ui.uiutil.DeleteConfirmationDialog
 import com.example.dbapp.viewmodel.MessageServiceViewModel
+import java.math.BigDecimal
 import java.util.Date
 
 
@@ -79,12 +82,17 @@ fun EditProductFormScreen(
     productId: Long,
     viewModel: ProductViewModel
 ) {
+    val context = LocalContext.current
     LaunchedEffect(productId) {
         viewModel.getProductById(productId)
+        viewModel.loadCartItems(context)
     }
+
 
     val product by viewModel.product.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val countCartItem by viewModel.countCartItems.collectAsState()
+
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     if (isLoading) {
@@ -130,11 +138,11 @@ fun EditProductFormScreen(
                         val updatedProduct = Product(
                             selectedCategoryId,
                             name,
-                            price.toDoubleOrNull() ?: 0.0,
+                            price.toBigDecimalOrNull() ?: BigDecimal.ZERO,
                             quantity.toIntOrNull() ?: 0,
                             img,
                             barcode,
-                            costPrice.toDoubleOrNull() ?: 0.0,
+                            costPrice.toBigDecimalOrNull() ?: BigDecimal.ZERO,
                             description,
                             product?.createdAt ?: Date()
                         )
@@ -213,8 +221,9 @@ fun EditProductFormScreen(
             CustomBottomSheet(
                 initialHeight = 160.dp,
                 expandedHeight = 350.dp,
-                onPrimaryClick = { println("Agregar 1 presionado") },
-                onSecondaryClick = { println("Agregar 1 presionado") },
+                onPrimaryClick = { product?.let { viewModel.addCartItem(context, it.id, 1) } },
+                onSecondaryClick = { navController.navigate("cart") },
+                cartItemCount = countCartItem,
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
             )
 
@@ -231,7 +240,8 @@ fun CustomBottomSheet(
     initialHeight: Dp = 160.dp,
     expandedHeight: Dp = 300.dp,
     onPrimaryClick: () -> Unit,
-    onSecondaryClick: () -> Unit
+    onSecondaryClick: () -> Unit,
+    cartItemCount: Int
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val minHeightPx = with(LocalDensity.current) { initialHeight.toPx() }
@@ -297,7 +307,10 @@ fun CustomBottomSheet(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 14.dp, horizontal = 8.dp),
+                    .padding(vertical = 14.dp, horizontal = 8.dp)
+                    .clickable {
+                        onPrimaryClick()
+                    },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -323,7 +336,10 @@ fun CustomBottomSheet(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 14.dp, horizontal = 8.dp),
+                    .padding(vertical = 14.dp, horizontal = 8.dp)
+                    .clickable {
+                        onSecondaryClick()
+                    },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -334,7 +350,7 @@ fun CustomBottomSheet(
                         .size(25.dp) // Tamaño más grande para el ícono
                 )
                 Text(
-                    text = "Ir al carrito (2 artículos)",
+                    text = "Ir al carrito ($cartItemCount artículos)",
                     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp) // Texto más grande
                 )
             }

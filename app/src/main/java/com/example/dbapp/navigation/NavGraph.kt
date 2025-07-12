@@ -5,7 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.dbapp.ui.cart.CartItemViewModel
 import com.example.dbapp.ui.cart.CartScreen
+import com.example.dbapp.ui.cart.CartViewModel
+import com.example.dbapp.ui.cart.EditCartFormScreen
+import com.example.dbapp.ui.cart.PayOptionScreen
+import com.example.dbapp.ui.cart.PayScreen
 import com.example.dbapp.ui.client.ContactViewModel
 import com.example.dbapp.ui.client.ClientView
 import com.example.dbapp.ui.client.CreateContactFormScreen
@@ -14,6 +19,7 @@ import com.example.dbapp.ui.home.HomeView
 import com.example.dbapp.ui.main.MainScreen
 import com.example.dbapp.ui.menu.MenuView
 import com.example.dbapp.ui.orders.OrderView
+import com.example.dbapp.ui.orders.OrderViewModel
 import com.example.dbapp.ui.product.CreateProductFormScreen
 import com.example.dbapp.ui.product.EditProductFormScreen
 import com.example.dbapp.ui.product.ProductView
@@ -27,7 +33,10 @@ fun AppNavGraph(
     navController: NavHostController,
     innerPadding: PaddingValues,
     contactViewModel: ContactViewModel,
-    productViewModel: ProductViewModel
+    productViewModel: ProductViewModel,
+    cartViewModel: CartViewModel,
+    cartItemViewModel: CartItemViewModel,
+    orderViewModel: OrderViewModel,
 ) {
     NavHost(navController = navController, startDestination = "main") {
         composable("main") {
@@ -57,7 +66,9 @@ fun AppNavGraph(
             )
         }
         composable("orders") { OrderView(
-            navController =navController
+            navController =navController,
+            viewModel = orderViewModel,
+            innerPadding = innerPadding
         ) }
 
         composable("product") { ProductView(
@@ -112,14 +123,42 @@ fun AppNavGraph(
                 viewModel = contactViewModel
             )
         }
+
         composable("cart") {
             CartScreen(
                 navController = navController,
                 innerPadding = innerPadding,
+                viewModel = cartViewModel,
                 onSave = {}
             )
         }
 
+        composable("cartItem/{cartItemId}") { backStackEntry ->
+            val cartItemId = backStackEntry.arguments?.getString("cartItemId")?.toLongOrNull() ?: 0L
+
+            EditCartFormScreen(
+                navController = navController,
+                innerPadding = innerPadding,
+                cartItemId = cartItemId,
+                viewModel = cartItemViewModel
+            )
+        }
+
+        composable("pay") {
+            PayScreen(
+                navController = navController,
+                innerPadding = innerPadding,
+                viewModel = cartViewModel
+            )
+        }
+
+        composable("pay_option") {
+            PayOptionScreen(
+                navController = navController,
+                innerPadding = innerPadding,
+                viewModel = cartViewModel
+            )
+        }
 
     }
 }

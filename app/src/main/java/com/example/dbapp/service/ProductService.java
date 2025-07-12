@@ -2,7 +2,6 @@ package com.example.dbapp.service;
 
 import java.util.List;
 import com.example.dbapp.core.AppDatabase;
-import com.example.dbapp.model.entity.Customer;
 import com.example.dbapp.model.entity.Product;
 import com.example.dbapp.repository.dao.ProductDao;
 

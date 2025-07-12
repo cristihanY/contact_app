@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -13,11 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import java.util.Date
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.dbapp.model.entity.Category
@@ -25,6 +21,7 @@ import com.example.dbapp.model.entity.Product
 import com.example.dbapp.ui.client.component.TitleForm
 import com.example.dbapp.ui.client.component.TopBarClientComponent
 import com.example.dbapp.ui.product.component.ProductForm
+import java.math.BigDecimal
 
 @Composable
 fun CreateProductFormScreen(
@@ -61,11 +58,11 @@ fun CreateProductFormScreen(
                     val newProduct = Product(
                         selectedCategoryId,
                         name,
-                        price.toDoubleOrNull() ?: 0.0,
+                        price.toBigDecimalOrNull() ?: BigDecimal.ZERO,
                         quantity.toIntOrNull() ?: 0,
                         img,
                         barcode,
-                        costPrice.toDoubleOrNull() ?: 0.0,
+                        costPrice.toBigDecimalOrNull() ?: BigDecimal.ZERO,
                         description,
                         Date()
                     )

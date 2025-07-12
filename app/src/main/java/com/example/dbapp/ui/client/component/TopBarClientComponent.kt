@@ -22,12 +22,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun TopBarCartComponent(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -36,7 +37,7 @@ fun TopBarCartComponent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        IconButton(onClick = { navController.navigateUp() }) {
+        IconButton(onClick = { navController.navigate("home") }) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Cerrar",
@@ -55,7 +56,9 @@ fun TopBarCartComponent(
 fun TopBarClientComponent(
     navController: NavController,
     onSave: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    textOnClick: String = "Guardar",
+    icon: ImageVector = Icons.Default.Close
 ) {
     Row(
         modifier = modifier
@@ -66,7 +69,7 @@ fun TopBarClientComponent(
     ) {
         IconButton(onClick = { navController.navigateUp() }) {
             Icon(
-                imageVector = Icons.Default.Close,
+                imageVector = icon,
                 contentDescription = "Cerrar",
                 modifier = Modifier.size(28.dp)
             )
@@ -78,7 +81,7 @@ fun TopBarClientComponent(
             }
         ) {
             Text(
-                text = "Guardar",
+                text = textOnClick,
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp
             )
